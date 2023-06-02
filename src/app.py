@@ -32,7 +32,5 @@ def dataloader() -> datasets.Dataset:
         ds = ds.rename_column(old, new)
     print(ds)
 
-    
-
 if __name__ == '__main__':
     dataloader()
