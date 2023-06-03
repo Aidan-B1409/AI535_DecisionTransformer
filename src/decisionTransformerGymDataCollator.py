@@ -1,15 +1,15 @@
 import numpy as np 
 import torch
-from random import random 
+import random
 from dataclasses import dataclass
 
 @dataclass
 class DecisionTransformerGymDataCollator:
     return_tensors: str = "pt"
-    max_len: int = 20 #subsets of the episode we use for training
-    state_dim: int = 17  # size of state space
-    act_dim: int = 6  # size of action space
-    max_ep_len: int = 1000 # max episode length in the dataset
+    max_len: int = 50 #subsets of the episode we use for training
+    state_dim: int = 25  # size of state space
+    act_dim: int = 4  # size of action space
+    max_ep_len: int = 49 # max episode length in the dataset
     scale: float = 1000.0  # normalization of rewards/returns
     state_mean: np.array = None  # to store state means
     state_std: np.array = None  # to store state stds
@@ -59,6 +59,7 @@ class DecisionTransformerGymDataCollator:
 
             # get sequences from dataset
             s.append(np.array(feature["observations"][si : si + self.max_len]).reshape(1, -1, self.state_dim))
+            # print(s[-1].shape)
             a.append(np.array(feature["actions"][si : si + self.max_len]).reshape(1, -1, self.act_dim))
             r.append(np.array(feature["rewards"][si : si + self.max_len]).reshape(1, -1, 1))
 
@@ -87,6 +88,7 @@ class DecisionTransformerGymDataCollator:
             rtg[-1] = np.concatenate([np.zeros((1, self.max_len - tlen, 1)), rtg[-1]], axis=1) / self.scale
             timesteps[-1] = np.concatenate([np.zeros((1, self.max_len - tlen)), timesteps[-1]], axis=1)
             mask.append(np.concatenate([np.zeros((1, self.max_len - tlen)), np.ones((1, tlen))], axis=1))
+
 
         s = torch.from_numpy(np.concatenate(s, axis=0)).float()
         a = torch.from_numpy(np.concatenate(a, axis=0)).float()
