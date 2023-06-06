@@ -36,14 +36,19 @@ def dataloader() -> datasets.Dataset:
         ds = ds.rename_column(old, new)
 
     goals = np.asarray(ds['goal'])
-    goals = np.hstack((goals, goals[:, -1:, :]))
+    # goals = np.hstack((goals, goals[:, -1:, :]))
 
-    rewards = np.linalg.norm((np.asarray(ds['achieved_goal']) - goals), axis=2, ord=2)
+    # Drop the last obvervation to enforce dimensions
+    # This is possibly very very bad
+    states = np.asarray(ds['observations'])[:, :-1, :]
+
+    rewards = np.linalg.norm((np.asarray(ds['achieved_goal'])[:, :-1, :] - goals), axis=2, ord=2)
     dones = np.where(rewards < 0.05, 1, 0)
 
     ds = ds.add_column('rewards', rewards.tolist())
     ds = ds.add_column('dones', dones.tolist())
-
+    ds = ds.remove_columns('observations')
+    ds = ds.add_column('observations', states.tolist())
     return ds
 
 def main():
@@ -77,6 +82,8 @@ def main():
     )
 
     trainer.train()
+
+    trainer.save_model("expert_pick.pt")
 
 
 if __name__ == '__main__':
