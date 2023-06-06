@@ -6,15 +6,17 @@ import pandas as pd
 import datasets
 from datasets import load_dataset
 from transformers import Trainer, TrainingArguments
-from decisionTransformerGymDataCollator import DecisionTransformerGymDataCollator
+from data_collator import DecisionTransformerGymDataCollator
 from model_assembler import TrainableDT
 from transformers import DecisionTransformerConfig
 
 def parseargs():
-    parser = argparse.ArgumentParser(help="")
+    parser = argparse.ArgumentParser(help="Decision Transformer for Robotic Control")
+    parser.add_argument('-e' '--environment', type=str, required=True, help="Which environment to train. Options are [Pick, Push, Reach, Slide]")
+    parser.add_argument('-t' '--train', type=bool, required=True, help="Wether to train a new model and save it, or just perform inference")
+    parser.add_argument('--split', type=float, required=True, help="Expert-Random Split, given as percentile (0.xx)")
+    return parser.parse_args()
 
-def main():
-    ds = dataloader()
 
 def dataloader() -> datasets.Dataset:
     objects = []
@@ -25,12 +27,9 @@ def dataloader() -> datasets.Dataset:
             except EOFError:
                 break
 
-    # Convert to np arrays
     # TODO - Handle funky shape logic in collator for other datasts
     for key in objects[0].keys():
         objects[0][key] = np.asarray(objects[0][key])
-        # print(objects[0][key].shape)
-    # print(objects[0]['ag'])
 
     ds = datasets.Dataset.from_dict(objects[0])
     for old, new in zip(ds.column_names, ['observations', 'actions', 'goal', 'achieved_goal']):
@@ -44,9 +43,12 @@ def dataloader() -> datasets.Dataset:
 
     ds = ds.add_column('rewards', rewards.tolist())
     ds = ds.add_column('dones', dones.tolist())
-    # ds['rewards'] = rewards
-    # ds['dones'] = dones
 
+    return ds
+
+def main():
+    args = parseargs()
+    ds = dataloader()
     collator = DecisionTransformerGymDataCollator(ds)
 
     # TODO - manually adjust state dim, act_dim
@@ -78,4 +80,4 @@ def dataloader() -> datasets.Dataset:
 
 
 if __name__ == '__main__':
-    dataloader()
+    main()
