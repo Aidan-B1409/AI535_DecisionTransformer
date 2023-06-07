@@ -4,6 +4,8 @@ import numpy as np
 import pyarrow as pa
 import pandas as pd
 import datasets
+import os
+from datetime import datetime
 from datasets import load_dataset
 from transformers import Trainer, TrainingArguments
 from data_collator import DecisionTransformerGymDataCollator
@@ -14,16 +16,16 @@ def parseargs():
     parser = argparse.ArgumentParser(help="Decision Transformer for Robotic Control")
     parser.add_argument('-e' '--environment', type=str, required=True, help="Which environment to train. Options are [Pick, Push, Reach, Slide]")
     parser.add_argument('-t' '--train', type=bool, required=True, help="Wether to train a new model and save it, or just perform inference")
-    parser.add_argument('--split', type=float, required=True, help="Expert-Random Split, given as percentile (0.xx)")
+    parser.add_argument('--split', type=float, required=True, help="What percentage of the dataset should be random, given as percentile (0.xx)")
     return parser.parse_args()
 
 
-def dataloader() -> datasets.Dataset:
+def load_pickle(path: str) -> datasets.Dataset:
     objects = []
-    with open('dataset/expert/FetchPick/buffer.pkl', 'rb') as expert_fetch_pick:
+    with open(path, 'rb') as pickled_data:
         while True:
             try:
-                objects.append(pickle.load(expert_fetch_pick))
+                objects.append(pickle.load(pickled_data))
             except EOFError:
                 break
 
@@ -32,6 +34,16 @@ def dataloader() -> datasets.Dataset:
         objects[0][key] = np.asarray(objects[0][key])
 
     ds = datasets.Dataset.from_dict(objects[0])
+    return ds
+
+
+
+def dataloader(path: str, p: float) -> datasets.Dataset:
+    ds_expert = load_pickle(os.path.join('dataset/expert', path))
+    ds_random = load_pickle(os.path.join('dataset/random', path))
+
+    ds = datasets.interleave_datasets([ds_random, ds_expert], [p, (1.0-p)])
+
     for old, new in zip(ds.column_names, ['observations', 'actions', 'goal', 'achieved_goal']):
         ds = ds.rename_column(old, new)
 
@@ -53,7 +65,8 @@ def dataloader() -> datasets.Dataset:
 
 def main():
     args = parseargs()
-    ds = dataloader()
+    path = f'{args.environment}/buffer.pkl'
+    ds = dataloader(path, args.split)
     collator = DecisionTransformerGymDataCollator(ds)
 
     # TODO - manually adjust state dim, act_dim
@@ -80,10 +93,11 @@ def main():
         train_dataset=ds,
         data_collator=collator,
     )
+    trainer = trainer.set_save(strategy='steps', steps=10)
 
     trainer.train()
 
-    trainer.save_model("expert_pick.pt")
+    trainer.save_model(f"{datetime.now().strftime("%d/%m/%Y-%H:%M:%S")}_{args.environment}.pt")
 
 
 if __name__ == '__main__':
