@@ -96,8 +96,8 @@ def main():
     trainer = trainer.set_save(strategy='steps', steps=10)
 
     trainer.train()
-
-    trainer.save_model(f"{datetime.now().strftime("%d/%m/%Y-%H:%M:%S")}_{args.environment}.pt")
+    dtime = datetime.now().strftime("%d/%m/%Y_ %H:%M:%S")
+    trainer.save_model(f"{dtime}_{args.environment}.pt")
 
 
 if __name__ == '__main__':
