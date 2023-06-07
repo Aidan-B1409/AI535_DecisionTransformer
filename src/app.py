@@ -13,7 +13,7 @@ from model_assembler import TrainableDT
 from transformers import DecisionTransformerConfig
 
 def parseargs():
-    parser = argparse.ArgumentParser(help="Decision Transformer for Robotic Control")
+    parser = argparse.ArgumentParser(description="Decision Transformer for Robotic Control")
     parser.add_argument('-e' '--environment', type=str, required=True, help="Which environment to train. Options are [Pick, Push, Reach, Slide]")
     parser.add_argument('-t' '--train', type=bool, required=True, help="Wether to train a new model and save it, or just perform inference")
     parser.add_argument('--split', type=float, required=True, help="What percentage of the dataset should be random, given as percentile (0.xx)")
