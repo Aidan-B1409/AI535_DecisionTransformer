@@ -1,0 +1,2 @@
+[console_scripts]
+decision_transformer = main.app:main
