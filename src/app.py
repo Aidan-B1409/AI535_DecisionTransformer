@@ -31,7 +31,7 @@ def load_pickle(path: str) -> datasets.Dataset:
 
     # TODO - Handle funky shape logic in collator for other datasts
     for key in objects[0].keys():
-        objects[0][key] = np.asarray(objects[0][key])
+        objects[0][key] = np.asarray(objects[0][key], dtype='float32')
 
     ds = datasets.Dataset.from_dict(objects[0])
     return ds
