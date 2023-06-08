@@ -87,13 +87,14 @@ def main():
         max_grad_norm=0.25,
     )
 
+    training_args = training_args.set_save(strategy='steps', steps=10)
+
     trainer = Trainer(
         model=model,
         args=training_args,
         train_dataset=ds,
         data_collator=collator,
     )
-    trainer = trainer.set_save(strategy='steps', steps=10)
 
     trainer.train()
     dtime = datetime.now().strftime("%d/%m/%Y_ %H:%M:%S")
