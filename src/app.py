@@ -87,7 +87,7 @@ def main():
         max_grad_norm=0.25,
     )
 
-    training_args = training_args.set_save(strategy='steps', steps=10)
+    training_args = training_args.set_save(strategy='epoch')
 
     trainer = Trainer(
         model=model,
