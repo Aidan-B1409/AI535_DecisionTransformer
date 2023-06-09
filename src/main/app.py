@@ -2,6 +2,7 @@ import pickle
 import argparse
 import numpy as np
 import pyarrow as pa
+import json
 import datasets
 import os
 from datetime import datetime
@@ -76,7 +77,7 @@ def main():
     training_args = TrainingArguments(
         output_dir="output/",
         remove_unused_columns=False,
-        num_train_epochs=120,
+        num_train_epochs=100,
         per_device_train_batch_size=64,
         learning_rate=1e-4,
         weight_decay=1e-4,
@@ -97,6 +98,9 @@ def main():
     trainer.train()
     dtime = datetime.now().strftime("%d/%m/%Y_ %H:%M:%S")
     trainer.save_model(f"{dtime}_{args.environment}.pt")
+
+    with open(f'{dtime}_{args.environment}_metrics.json', 'w') as file:
+        file.write(json.dumps(trainer.state.log_history))
 
 
 if __name__ == '__main__':
