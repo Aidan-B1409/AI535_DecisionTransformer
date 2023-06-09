@@ -6,8 +6,8 @@ import datasets
 import os
 from datetime import datetime
 from transformers import Trainer, TrainingArguments
-from data_collator import DecisionTransformerGymDataCollator
-from model_assembler import TrainableDT
+from .data_collator import DecisionTransformerGymDataCollator
+from .model_assembler import TrainableDT
 from transformers import DecisionTransformerConfig
 
 def parseargs():

@@ -1,3 +1,17 @@
+[tool.poetry]
+name = "decision-transformer"
+version = "0.1.0"
+description = "A project for AI-535 Deep Learning @ OSU"
+authors = ["Aidan-B1409 <aidanb1049@gmail.com>"]
+readme = "README.md"
+packages = [{include = "decision_transformer"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.scripts]
+decision_transformer = 'src.main.app:main'
+
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
