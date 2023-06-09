@@ -10,7 +10,7 @@ packages = [{include = "decision_transformer"}]
 python = "^3.10"
 
 [tool.poetry.scripts]
-decision_transformer = 'src.main.app:main'
+dt_train = 'src.main.app:main'
 
 [build-system]
 requires = ["poetry-core"]
