@@ -29,6 +29,8 @@ class DecisionTransformerGymDataCollator:
         self.n_traj = len(traj_lens)
         states = np.vstack(states)
         self.state_mean, self.state_std = np.mean(states, axis=0), np.std(states, axis=0) + 1e-6
+        print(f"State Mean: {self.state_mean}")
+        print(f"State std: {self.state_std}")
         
         traj_lens = np.array(traj_lens)
         self.p_sample = traj_lens / sum(traj_lens)
