@@ -54,9 +54,9 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
     states = np.asarray(ds['observations'])[:, :-1, :]
 
     if args.environment == 'FetchReach':
-        rewards = -1 * np.linalg.norm((np.asarray(ds['achieved_goal'])[:, :-1, :] - goals), axis=2, ord=2)
-    else:
         rewards = -1 * np.linalg.norm((np.asarray(ds['achieved_goal']) - goals), axis=2, ord=2)
+    else:
+        rewards = -1 * np.linalg.norm((np.asarray(ds['achieved_goal'])[:, :-1, :] - goals), axis=2, ord=2)
     dones = np.where(rewards < 0.05, 1, 0)
 
     ds = ds.add_column('rewards', rewards.tolist())
