@@ -6,11 +6,12 @@ from dataclasses import dataclass
 @dataclass
 class DecisionTransformerGymDataCollator:
     return_tensors: str = "pt"
-    max_len: int = 50 #subsets of the episode we use for training
+    # sussy
+    max_len: int = 4 #subsets of the episode we use for training
     state_dim: int = 25  # size of state space
     act_dim: int = 4  # size of action space
-    max_ep_len: int = 49 # max episode length in the dataset
-    scale: float = 1000.0  # normalization of rewards/returns
+    max_ep_len: int = 50 # max episode length in the dataset
+    scale: float = 50.0  # normalization of rewards/returns
     state_mean: np.array = None  # to store state means
     state_std: np.array = None  # to store state stds
     p_sample: np.array = None  # a distribution to take account trajectory lengths
