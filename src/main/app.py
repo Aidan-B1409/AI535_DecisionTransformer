@@ -37,7 +37,7 @@ def load_pickle(path: str) -> datasets.Dataset:
 
 
 
-def dataloader(path: str, p: float) -> datasets.Dataset:
+def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Dataset:
     ds_expert = load_pickle(os.path.join('dataset/expert', path))
     ds_random = load_pickle(os.path.join('dataset/random', path))
 
@@ -53,7 +53,10 @@ def dataloader(path: str, p: float) -> datasets.Dataset:
     # This is possibly very very bad
     states = np.asarray(ds['observations'])[:, :-1, :]
 
-    rewards = np.linalg.norm((np.asarray(ds['achieved_goal'])[:, :-1, :] - goals), axis=2, ord=2)
+    if args.environment == 'FetchReach':
+        rewards = -1 * np.linalg.norm((np.asarray(ds['achieved_goal'])[:, :-1, :] - goals), axis=2, ord=2)
+    else:
+        rewards = -1 * np.linalg.norm((np.asarray(ds['achieved_goal']) - goals), axis=2, ord=2)
     dones = np.where(rewards < 0.05, 1, 0)
 
     ds = ds.add_column('rewards', rewards.tolist())
@@ -65,7 +68,7 @@ def dataloader(path: str, p: float) -> datasets.Dataset:
 def main():
     args = parseargs()
     path = f'{args.environment}/buffer.pkl'
-    ds = dataloader(path, args.split)
+    ds = dataloader(path, args.split, args)
     collator = DecisionTransformerGymDataCollator(ds)
 
     # TODO - manually adjust state dim, act_dim
