@@ -96,7 +96,7 @@ def main():
     )
 
     trainer.train()
-    dtime = datetime.now().strftime("%d/%m/%Y_ %H:%M:%S")
+    dtime = datetime.now().strftime("%d:%m:%Y_%H:%M:%S")
     trainer.save_model(f"{dtime}_{args.environment}.pt")
 
     with open(f'{dtime}_{args.environment}_metrics.json', 'w') as file:
