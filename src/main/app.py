@@ -63,6 +63,9 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
     ds = ds.add_column('dones', dones.tolist())
     ds = ds.remove_columns('observations')
     ds = ds.add_column('observations', states.tolist())
+     # TODO - Calculate target return
+    avg_target_return = np.mean(np.mean(np.sum(rewards, axis=1), axis=0), axis=1)
+    print(f"Average Target Return: {avg_target_return}")
     return ds
 
 def main():
