@@ -41,7 +41,7 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
     ds_expert = load_pickle(os.path.join('dataset/expert', path))
     ds_random = load_pickle(os.path.join('dataset/random', path))
 
-    ds = datasets.interleave_datasets([ds_random, ds_expert], [p, (1.0-p)])
+    ds = datasets.interleave_datasets([ds_random, ds_expert], [p, (1.0-p)], stopping_strategy='first_exhausted')
 
     for old, new in zip(ds.column_names, ['observations', 'actions', 'goal', 'achieved_goal']):
         ds = ds.rename_column(old, new)
