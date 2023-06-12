@@ -54,12 +54,14 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
     # This is possibly very very bad
 
     if args.environment == 'FetchReach':
-        rewards = -1 * np.linalg.norm((np.asarray(ds['achieved_goal']) - goals), axis=2, ord=2)
+        states = np.asarray(ds['observations'])
+        ach_goal = np.asarray(ds['achieved_goal'])
     else:
         states = np.asarray(ds['observations'])[:, :-1, :]
-        rewards = -1 * np.linalg.norm((np.asarray(ds['achieved_goal'])[:, :-1, :] - goals), axis=2, ord=2)
-    dones = np.where(rewards < 0.05, 1, 0)
+        ach_goal = np.asarray(ds['achieved_goal'])[:, :-1, :]
 
+    rewards = -1 * np.linalg.norm((ach_goal - goals), axis=2, ord=2)
+    dones = np.where(rewards < 0.05, 1, 0)
     # Achieved Goal:  40000 x 50 x 3
     # Observations:   40000 x 50 x 24
 
