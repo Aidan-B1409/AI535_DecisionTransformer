@@ -65,7 +65,7 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
     # Achieved Goal:  40000 x 50 x 3
     # Observations:   40000 x 50 x 24
 
-    states = np.concatenate([states, np.asarray(ds['achieved_goal']), goals], axis=2)
+    states = np.concatenate([states, ach_goal, goals], axis=2)
     
 
     ds = ds.add_column('rewards', rewards.tolist())
