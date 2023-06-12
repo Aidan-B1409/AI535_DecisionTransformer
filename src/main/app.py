@@ -81,7 +81,7 @@ def main():
 
     
     training_args = TrainingArguments(
-        output_dir="output/",
+        output_dir=f"{args.environment}_output/",
         remove_unused_columns=False,
         num_train_epochs=100,
         per_device_train_batch_size=64,
