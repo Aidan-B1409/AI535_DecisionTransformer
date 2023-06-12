@@ -79,9 +79,10 @@ def main():
     model = TrainableDT(config)
 
 
+    dtime = datetime.now().strftime("%d:%m:%Y_%H:%M:%S")
     
     training_args = TrainingArguments(
-        output_dir=f"{args.environment}_output/",
+        output_dir=f"{dtime}_{args.environment}_output/",
         remove_unused_columns=False,
         num_train_epochs=100,
         per_device_train_batch_size=64,
@@ -102,7 +103,6 @@ def main():
     )
 
     trainer.train()
-    dtime = datetime.now().strftime("%d:%m:%Y_%H:%M:%S")
     trainer.save_model(f"{dtime}_{args.environment}.pt")
 
     with open(f'{dtime}_{args.environment}_metrics.json', 'w') as file:
