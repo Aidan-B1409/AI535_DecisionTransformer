@@ -13,8 +13,9 @@ from transformers import DecisionTransformerConfig
 
 def parseargs():
     parser = argparse.ArgumentParser(description="Decision Transformer for Robotic Control")
-    parser.add_argument('-e' '--environment', type=str, required=True, dest='environment', help="Which environment to train. Options are [Pick, Push, Reach, Slide]")
-    parser.add_argument('-t' '--train', type=bool, required=True, dest='train', help="Wether to train a new model and save it, or just perform inference")
+    parser.add_argument('-e', '--environment', type=str, required=True, dest='environment', help="Which environment to train. Options are [Pick, Push, Reach, Slide]")
+    parser.add_argument('-t', '--train', type=bool, required=True, dest='train', help="Wether to train a new model and save it, or just perform inference")
+    parser.add_argument('--model_type', type=str, required=True, help = "Which type of model we're training - Expert, Split, or Random")
     parser.add_argument('--split', type=float, required=True, dest='split', help="What percentage of the dataset should be random, given as percentile (0.xx)")
     return parser.parse_args()
 
@@ -58,6 +59,12 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
     else:
         rewards = -1 * np.linalg.norm((np.asarray(ds['achieved_goal'])[:, :-1, :] - goals), axis=2, ord=2)
     dones = np.where(rewards < 0.05, 1, 0)
+
+    # Achieved Goal:  40000 x 50 x 3
+    # Observations:   40000 x 50 x 24
+
+    states = np.concatenate([states, np.asarray(ds['achieved_goal']), goals], axis=2)
+    
 
     ds = ds.add_column('rewards', rewards.tolist())
     ds = ds.add_column('dones', dones.tolist())

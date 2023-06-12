@@ -8,7 +8,7 @@ class DecisionTransformerGymDataCollator:
     return_tensors: str = "pt"
     # sussy
     max_len: int = 4 #subsets of the episode we use for training
-    state_dim: int = 25  # size of state space
+    state_dim: int = 31  # size of state space
     act_dim: int = 4  # size of action space
     max_ep_len: int = 50 # max episode length in the dataset
     scale: float = 50.0  # normalization of rewards/returns
