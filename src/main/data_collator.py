@@ -17,7 +17,7 @@ class DecisionTransformerGymDataCollator:
     p_sample: np.array = None  # a distribution to take account trajectory lengths
     n_traj: int = 0 # to store the number of trajectories in the dataset
 
-    def __init__(self, dataset) -> None:
+    def __init__(self, dataset, is_reach: bool) -> None:
         self.act_dim = len(dataset[0]["actions"][0])
         self.state_dim = len(dataset[0]["observations"][0])
         self.dataset = dataset
@@ -35,6 +35,8 @@ class DecisionTransformerGymDataCollator:
         
         traj_lens = np.array(traj_lens)
         self.p_sample = traj_lens / sum(traj_lens)
+        if is_reach:
+            self.state_dim = 16
 
     def _discount_cumsum(self, x, gamma):
         discount_cumsum = np.zeros_like(x)
