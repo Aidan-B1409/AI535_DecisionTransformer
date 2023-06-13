@@ -7,7 +7,7 @@ from dataclasses import dataclass
 class DecisionTransformerGymDataCollator:
     return_tensors: str = "pt"
     # sussy
-    max_len: int = 1 #subsets of the episode we use for training
+    max_len: int = 4 #subsets of the episode we use for training
     state_dim: int = 31  # size of state space
     act_dim: int = 4  # size of action space
     max_ep_len: int = 49 # max episode length in the dataset
@@ -37,6 +37,7 @@ class DecisionTransformerGymDataCollator:
         self.p_sample = traj_lens / sum(traj_lens)
         if is_reach:
             self.state_dim = 16
+            # self.max_len = 1
 
     def _discount_cumsum(self, x, gamma):
         discount_cumsum = np.zeros_like(x)
