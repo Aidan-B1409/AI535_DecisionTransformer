@@ -115,7 +115,7 @@ def main():
     )
 
     trainer.train()
-    trainer.save_model(f"{dtime}_{args.environment}.pt")
+    trainer.save_model(f"{dtime}_{args.environment}_{args.model_type}.pt")
 
     with open(f'{dtime}_{args.environment}_{args.model_type}_metrics.json', 'w') as file:
         file.write(json.dumps(trainer.state.log_history))
