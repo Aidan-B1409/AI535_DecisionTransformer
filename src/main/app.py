@@ -87,7 +87,7 @@ def main():
     collator = DecisionTransformerGymDataCollator(ds, args.model_type == 'FetchReach')
 
     # TODO - manually adjust state dim, act_dim
-    config = DecisionTransformerConfig(state_dim=collator.state_dim, act_dim=collator.act_dim)
+    config = DecisionTransformerConfig(state_dim=collator.state_dim, act_dim=collator.act_dim, n_layer=2, n_head=4)
     model = TrainableDT(config)
 
 
