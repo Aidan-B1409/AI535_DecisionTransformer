@@ -44,6 +44,7 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
 
     ds = datasets.interleave_datasets([ds_random, ds_expert], [p, (1.0-p)], stopping_strategy='first_exhausted')
 
+    print(ds.column_names)
     for old, new in zip(ds.column_names, ['observations', 'actions', 'goal', 'achieved_goal']):
         ds = ds.rename_column(old, new)
 
