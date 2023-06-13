@@ -45,7 +45,11 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
     ds = datasets.interleave_datasets([ds_random, ds_expert], [p, (1.0-p)], stopping_strategy='first_exhausted')
 
     print(ds.column_names)
-    for old, new in zip(ds.column_names, ['observations', 'actions', 'goal', 'achieved_goal']):
+    if args.environment == 'FetchReach':
+        col_name = ['observations', 'goal', 'achieved_goal', 'actions']
+    else: 
+        col_name = ['observations', 'actions', 'goal', 'achieved_goal']
+    for old, new in zip(ds.column_names, col_name):
         ds = ds.rename_column(old, new)
 
     goals = np.asarray(ds['goal'])
@@ -55,11 +59,7 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
     # This is possibly very very bad
 
     states = np.asarray(ds['observations'])[:, :-1, :]
-    if args.environment == 'FetchReach':
-        ach_goal = np.asarray(ds['achieved_goal'])[:, :, 1:]
-        print(ach_goal)
-    else:
-        ach_goal = np.asarray(ds['achieved_goal'])[:, :-1, :]
+    ach_goal = np.asarray(ds['achieved_goal'])[:, :-1, :]
 
 
     rewards = -1 * np.linalg.norm((ach_goal - goals), axis=2, ord=2)
