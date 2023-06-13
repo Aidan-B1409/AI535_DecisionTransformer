@@ -53,12 +53,11 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
     # Drop the last obvervation to enforce dimensions
     # This is possibly very very bad
 
+    states = np.asarray(ds['observations'])[:, :-1, :]
     if args.environment == 'FetchReach':
-        states = np.asarray(ds['observations'])
         ach_goal = np.asarray(ds['achieved_goal'])[:, :, 1:]
         print(ach_goal)
     else:
-        states = np.asarray(ds['observations'])[:, :-1, :]
         ach_goal = np.asarray(ds['achieved_goal'])[:, :-1, :]
 
 
