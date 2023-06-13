@@ -46,7 +46,7 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
 
     print(ds.column_names)
     if args.environment == 'FetchReach':
-        col_name = ['observations', 'goal', 'achieved_goal', 'actions']
+        col_name = ['observations', 'achieved_goal', 'goal', 'actions']
     else: 
         col_name = ['observations', 'actions', 'goal', 'achieved_goal']
     for old, new in zip(ds.column_names, col_name):
