@@ -7,7 +7,7 @@ from dataclasses import dataclass
 class DecisionTransformerGymDataCollator:
     return_tensors: str = "pt"
     # sussy
-    max_len: int = 2 #subsets of the episode we use for training
+    max_len: int = 1 #subsets of the episode we use for training
     state_dim: int = 31  # size of state space
     act_dim: int = 4  # size of action space
     max_ep_len: int = 49 # max episode length in the dataset
