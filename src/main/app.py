@@ -76,6 +76,7 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
      # TODO - Calculate target return
     avg_target_return = np.mean(np.sum(rewards, axis=1), axis=0)
     print(f"Average Target Return: {avg_target_return}")
+    print(f"Action Shape: {ds['actions'].shape}")
     return ds
 
 def main():
