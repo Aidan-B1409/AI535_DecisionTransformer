@@ -55,7 +55,7 @@ def dataloader(path: str, p: float, args: argparse.Namespace) -> datasets.Datase
 
     if args.environment == 'FetchReach':
         states = np.asarray(ds['observations'])
-        ach_goal = np.asarray(ds['achieved_goal'])
+        ach_goal = np.asarray(ds['achieved_goal'])[:, 1:, 1]
         print(ach_goal)
     else:
         states = np.asarray(ds['observations'])[:, :-1, :]
