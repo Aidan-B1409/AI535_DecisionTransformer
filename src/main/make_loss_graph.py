@@ -16,9 +16,9 @@ def main():
     dfs = {}
     for path in os.listdir(args.input):
         df = pd.read_json(os.path.join(args.input, path), orient='records')
-        path_parts = path.split('_')
+        path_parts = path.split('.')[0]
+        df_name = "".join(path.split('_')[2:-1])
         print(path_parts)
-        df_name = path_parts[2] + path_parts[3]
         print(df)
         df = df.set_index('epoch')
         dfs[df_name] = df
