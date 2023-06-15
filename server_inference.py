@@ -57,7 +57,7 @@ FIFTYRANDOMFIFTYEXPERT = '5050'
 NINETYRANDOMTENEXPERT = '9010'
 
 
-def inference(modelpath, task, data, num_runs):
+def inference(modelpath, task, data, num_runs, MAX_EPISODE_LENGTH):
 
     if task == PICKANDPLACE:
         ENV_NAME = 'FetchPickAndPlaceDense-v2'
@@ -287,8 +287,6 @@ def inference(modelpath, task, data, num_runs):
     state_dim = np.array(np.sum([env.observation_space['observation'].shape[0], env.observation_space['achieved_goal'].shape[0], env.observation_space['desired_goal'].shape[0]]))# state size
     act_dim = env.action_space.shape[0] # action size
 
-    MAX_EPISODE_LENGTH = 50
-
 
     state_mean = torch.from_numpy(state_mean)
     state_std = torch.from_numpy(state_std)
@@ -388,6 +386,7 @@ def parseargs():
     parser.add_argument('-f' '--dirpath', type=str, required=True, dest='dirpath', help="")
     parser.add_argument('-d', '--data', type=str, required=True, dest='data', help="")
     parser.add_argument('-nr', '--num_runs', type=int, required=False, dest='num_runs', default=1, help="")
+    parser.add_argument('-l', '--max_episode_length', type=int, required=False, dest='max_episode_length', default=50, help="")
     return parser.parse_args()
 
 
@@ -399,7 +398,7 @@ if __name__ == "__main__":
     dir_filepath = args.dirpath
     data = args.data
     num_runs = args.num_runs
-    render_bool = args.render
+    max_episode_length = args.max_episode_length
 
 
     ask = 'y'
@@ -424,7 +423,7 @@ if __name__ == "__main__":
     for idx, model in enumerate(models):
         if idx%10 == 0 or idx == len(models)-1:
             print(idx)
-            runs_successful, run_rewards, runs_frames, runs_actions, runs_returns, runs_states, runs_timesteps = inference(model, task, data, num_runs)
+            runs_successful, run_rewards, runs_frames, runs_actions, runs_returns, runs_states, runs_timesteps = inference(model, task, data, num_runs, MAX_EPISODE_LENGTH=max_episode_length)
             successful.append(runs_successful)
             run_rewards = torch.sum(run_rewards, axis=1)
             reward_means.append(run_rewards.mean())
